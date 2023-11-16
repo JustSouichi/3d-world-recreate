@@ -12,16 +12,19 @@ def add_circles_to_edges(frame):
     # Use the Canny edge detector
     edges = cv2.Canny(blurred, 50, 150)
 
-    # Use HoughCircles to detect circles in the edges
-    circles = cv2.HoughCircles(edges, cv2.HOUGH_GRADIENT, dp=1, minDist=50, param1=50, param2=30, minRadius=10, maxRadius=50)
+    # Find contours in the edges
+    contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    if circles is not None:
-        # Convert circle coordinates to integer
-        circles = np.round(circles[0, :]).astype("int")
-
-        # Draw green circles around the detected edges
-        for (x, y, r) in circles:
-            cv2.circle(frame, (x, y), r, (0, 255, 0), 4)
+    # Draw green circles around the contours
+    for contour in contours:
+        # Ignore small contours (adjust the area threshold as needed)
+        if cv2.contourArea(contour) > 0.0:
+            # Fit a circle to the contour
+            (x, y), radius = cv2.minEnclosingCircle(contour)
+            center = (int(x), int(y))
+            #radius = int(radius)
+            radius = 1
+            cv2.circle(frame, center, radius, (0, 255, 0), 2)
 
 # Open video capture
 cap = cv2.VideoCapture('drive.mp4')  # Replace 'your_video.mp4' with the path to your video file

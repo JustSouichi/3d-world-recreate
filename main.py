@@ -31,6 +31,7 @@ try:
           cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
           cv2.resizeWindow('Frame', (W, H))
           cv2.imshow('Frame', frame)
+          print(frame)
           if cv2.waitKey(25) & 0xFF == ord('q'):
             break
         else:
